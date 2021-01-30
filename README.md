@@ -5,25 +5,41 @@ Course schedule generate system. Student can input their major(minor), their top
 Course schedule for all courses(schedule), All major course requirement list(majorReq), Special topic cover list(specialTopics), If their school are quarter base or not(quarter), Expected workload for each quarter/semester(expectedWorkLoad), Expected graduate quarter(expectedGraduateQuarter).
 
 Format of input:
+
 schedule, majorReq, and specialTopics are stored in .txt files. All other inputs are passed in by command line input.
 
 Example of schdule(json format?):
+
 Coursename:     CSE 1
+
 Section name:   A01
+
 Instructor:     Bill the coder
+
 Classroom:      Edward's Spaceship 
+
 Time:           MWF 9:00 - 9:50
+
 DI:             Th 10:00 - 10:50
 
+
 Example of majorReq:
+
 Major:          CSE
+
 Lower division: CSE 1, CSE 3, ...
+
 Upper division: CSE 100, CSE 101...
 
+
 Example of specialTopics:
+
 Major:          CSE
+
 Topics:         System      - CSE 120, CSE 123..
+
                 Network     - CSE 186, CSE 199..
+
                 ..
 
 
@@ -33,7 +49,8 @@ The organized course schedules for all quarters(semester). There may be some dif
 Format of course schedule: x axies are the day in a week, y axies are the time for each day. The course will be shown in the grids with the location and name of professor.
 
 For example: 	 
-Example of a course schedule
+
+Example of a course schedule:
 
 
 ## Errors that may happen:
