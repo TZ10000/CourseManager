@@ -1,44 +1,43 @@
 # CourseManager
-Course managing system for student.
+Course schedule generate system. Student can input their major(minor), their topic of interest, their expect workload, and their expect graduate quarter(semesters). The system can produce a quarter(semester) base schedule(no time confliction) for the student.
 
-课表管理与生成系统
+## Input: 
+Course schedule for all courses(schedule), All major course requirement list(majorReq), Special topic cover list(specialTopics), If their school are quarter base or not(quarter), Expected workload for each quarter/semester(expectedWorkLoad), Expected graduate quarter(expectedGraduateQuarter).
 
-描述：该程序具有输入课程，搜索课程，生成课表以及按需求自动生成课表的功能。
+Format of input:
+schedule, majorReq, and specialTopics are stored in .txt files. All other inputs are passed in by command line input.
+
+Example of schdule(json format?):
+Coursename:     CSE 1
+Section name:   A01
+Instructor:     Bill the coder
+Classroom:      Edward's Spaceship 
+Time:           MWF 9:00 - 9:50
+DI:             Th 10:00 - 10:50
+
+Example of majorReq:
+Major:          CSE
+Lower division: CSE 1, CSE 3, ...
+Upper division: CSE 100, CSE 101...
+
+Example of specialTopics:
+Major:          CSE
+Topics:         System      - CSE 120, CSE 123..
+                Network     - CSE 186, CSE 199..
+                ..
 
 
-变量定义：
+## Output: 
+The organized course schedules for all quarters(semester). There may be some different versions, produce them all.
 
-主课程： 学期，学院，课名，课号，上课时间以及课程描述
+Format of course schedule: x axies are the day in a week, y axies are the time for each day. The course will be shown in the grids with the location and name of professor.
 
-例如： 	    2021春
+For example: 	 
+Example of a course schedule
 
-                  工程学院
-                         
-                  EC440A1，
-                  
-                 操作系统入门
-                 
-                 描述：Hello World
-                 
-                 MW 4:30 pm-6:15 pm
-                 
-课表：一张具有所有课程的表格，横轴为星期几，纵轴为时间，课程在表中显示为小方格
 
-1.输入课程：用户输入课程信息并放在txt文件中保存。
-
-2.搜索课程： 用户输入学期以及想要搜索的课号，程序输出当前学期，学院的所有课程（以该课为首），如果课不存在则向后生成课号与之接近的课程如 “EC441”。
-
-3.生成课表： 用户选择自己想上的课后，可以生成出具有这些课信息的表格
-
-4.按需求自动生成课表： 用户可以输入本学期中所有自己想上的课的学院以及课号，系统会为学生自动选课并生成课表。如果讨论课与主课程有冲突则在不改变主课程的情况下，搜索其他讨论课并加入课表。
-
-报错条件：
-
-1.没有所选的课程。
-
-2.主课程与主课程之间有冲突。
-
-3.主课程与讨论课有冲突，但已无其他同类讨论课。
+## Errors that may happen:
+There is no way to generate a schedule with the given inputs. Such like you want to spend 3 quarters to guadrate, or you expect workload of 1 course a quater. Mostly this will not happen.
 
 
 
