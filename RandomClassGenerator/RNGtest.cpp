@@ -35,10 +35,6 @@ vector<int> Randomshuffle(int shufflenum)
 
 int main()
 {
-    vector<int> shuffled = Randomshuffle(10);
-    for (int i = 0; i < 10; i++)
-    {
-        cout << shuffled.at(i)<<endl;
-    }
+    cout << rand() % 1;
     
 }

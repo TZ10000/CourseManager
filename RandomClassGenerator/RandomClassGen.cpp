@@ -1,8 +1,9 @@
 #include<fstream>
 #include<iostream>
-#include<vector>
+#include <stdlib.h>
+#include <vector>
 #include <algorithm>
-
+#include <time.h>
 using namespace std;
 
 struct Course
@@ -38,7 +39,6 @@ vector<int> Randomshuffle(int shufflenum)
 
 int main()
 {
-    //ofstream outfile ("CSECourseSchedule.txt");  // Create a new text file to contain the course information
     string newmajor = "CSE";
     vector<int> randomCoursesNum_Last1 = Randomshuffle(10);  // this is a vector that contains the last 2 digits of the class number
     vector<int> randomCoursesNum_Last2 = Randomshuffle(10);
@@ -48,7 +48,10 @@ int main()
     vector<int> randomEndTime;
     /* this is a random time from 800 - 1700, class can start any where from these time but only
     from 00 or 30. for example, a 845 class is not legal*/
-    int CourseDuration;  // how long is the class, can only have 1h or 2h, also randomized
+
+    vector<int> randomPreRequisite; 
+    /* contains the pre Requisite class of the every class, the class number of the preRequisite
+    will not be larger than its own preRequisite */
 
     /* generating 50 random course numbers 1__ 2__ 3__ 4__ 5__ all have 10 courses */
     for (int i = 1; i < 6; i++)
@@ -59,7 +62,7 @@ int main()
         }
     }
     sort(randomCoursesNum.begin(),randomCoursesNum.end());
-    // testing case
+    // test case
     // for (int i = 0; i < randomCoursesNum.size(); i++)
     //     cout << randomCoursesNum[i] << endl;
 
@@ -79,7 +82,7 @@ int main()
         }
         randomStartTime.push_back(hour * 100 + minuteval);
     }
-    // testing case
+    // test case
     // for (int i = 0; i < randomStartTime.size(); i++)
     //     cout << randomStartTime[i] << endl;
     randomEndTime = randomStartTime;
@@ -87,11 +90,48 @@ int main()
     {
         int rdm = rand() % 10;
         if (rdm < 5)
-            randomEndTime.at(i) = randomEndTime.at(i) + 100;
+            randomEndTime.at(i) = randomEndTime.at(i) + 100;  // 1 hour class
         else
-            randomEndTime.at(i) = randomEndTime.at(i) + 200;
+            randomEndTime.at(i) = randomEndTime.at(i) + 200;  // 2 hour class
     }
-    // testing case
+    // test case
     // for (int i = 0; i < randomEndTime.size(); i++)
     //     cout << randomEndTime[i] << endl;
+
+    /* Generating random pre-Requisite */
+    for (int i = 0; i < 10; i++)
+    {
+        randomPreRequisite.push_back(0);  // the first 10 classes will not have preRequi;
+    }
+
+    for (int i = 1; i < 5; i++)
+    {
+        for (int j = 0; j < 10; j++)
+        {
+            int rdm = rand() % 2;
+            if (rdm == 0) // If this class has 0 PreRe
+                randomPreRequisite.push_back(0);
+            else if (rdm == 1) // If this class has 1 PreRe
+            {
+                randomPreRequisite.push_back(randomCoursesNum.at(rand() % i * 10 + rand() % (j + 1)));
+            } 
+        }
+    }
+    // test case
+    // for (int i = 0; i < randomPreRequisite.size(); i++)
+    //     cout << randomPreRequisite.at(i) << endl;
+    // 为什么我每次跑出来的结果都是一样啊草
+    ofstream outfile ("CSECourseSchedule.txt");  // Create a new text file to contain the course information
+    for (int i = 0; i < randomCoursesNum.size(); i++)
+    {
+        //outfile << randomCoursesNum.at(i) << endl;
+        int courseNum = randomCoursesNum.at(i);
+        int startTime = randomStartTime.at(i);
+        int endTime = randomEndTime.at(i);
+        int preRe = randomPreRequisite.at(i);
+        if (preRe == 0)
+            outfile << "CSE" << courseNum << ' ' << startTime << '-' << endTime << ' ' << endl;
+        else
+            outfile << "CSE" << courseNum << ' ' << startTime << '-' << endTime << ' ' << "CSE" << preRe << endl;
+    }
 }
