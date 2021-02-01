@@ -134,4 +134,6 @@ int main()
         else
             outfile << "CSE" << courseNum << ' ' << startTime << '-' << endTime << ' ' << "CSE" << preRe << endl;
     }
+
+    return 0;
 }
