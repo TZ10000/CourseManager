@@ -1,3 +1,18 @@
+## Dev issue
+Need 12 .txt files for schedule, 1 file for major requirement.
+
+need to support multiple prereq.
+
+Still need to use the random course generator(RCG). The seperator should be tab and it is hard to do it percisely by hand. 
+
+For RCG: 
+
+1. Make sure the seperator are tabs. 
+2. Should have a header for reading. 
+3. We have 12 quarters and we want to make sure that a course should be offer multiple times(I think around 9 times for lower division and around 6 time for upper division is kindly reasonable) in these 12 quarter. So I think the 100-500 region is too large, since we have 100 option for a level so we need around 70 - 80 of them in 100 courses. I would say we CSE1 to CSE20 are lower division, and we generate 16 of them(80%) each quarter. CSE21 to CSE50 are the upper, and we can have 15 of them each quarter.
+4. there need to be more majors.
+5. For major requirement, we need another program that we give it the major name, and it randomly generate a major requirement(well formatted) with around 10 lower div major course, 15 upper div major course, 3 writing course, 3 Math course, 2 phys/chem course. etc
+
 # CourseManager
 Course schedule generate system. Student can input their major(minor), their topic of interest, their expect workload, and their expect graduate quarter(semesters). The system can produce a quarter(semester) base schedule(no time confliction) for the student.
 
