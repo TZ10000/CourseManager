@@ -18,19 +18,29 @@ class Course {
     string name;
     int startTime;      // 18:00 will be presented as 1800
     int endTime;
+    int day;
 
-    bool taken;         // if the student took the course
+    // bool taken;         // if the student took the course, not sure if we need it
+    Course* prereq;
+    vector<Course*> childrenCourse;
 
     // Null constructor
-    Course() : name(""), startTime(-1), endTime(-1), taken(false) {}
+    Course() : name(""), startTime(-1), endTime(-1), day(-1), prereq(nullptr), childrenCourse(vector<Course*>()) {}
 
     // Course constructor
-    Course(string name, startTime starttime, endTime endtime) : taken(false) {}
+    Course(string name, startTime starttime, endTime endtime, day day, prereq prereq) : 
+        name(name), startTime(starttime), endTime(endtime), prereq(prereq), 
+        day(day), childrenCourse(vector<Course*>()) {}
+
+    // Add the course to childcourse list
+    void addChild(Course* child) {
+      childrenCourse.add(child);
+    }
 
     /* TODO */
-    void take() {
-        taken = true;
-    }
+    // void take() {
+    //     taken = true;
+    // }
 
 };
 
