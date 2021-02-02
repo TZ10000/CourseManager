@@ -28,7 +28,7 @@ class Course {
     Course() : name(""), startTime(-1), endTime(-1), day(-1), prereq(nullptr), childrenCourse(vector<Course*>()) {}
 
     // Course constructor
-    Course(string name, startTime starttime, endTime endtime, day day, prereq prereq) : 
+    Course(string name, int starttime, int endtime, int day, Course* prereq) : 
         name(name), startTime(starttime), endTime(endtime), prereq(prereq), 
         day(day), childrenCourse(vector<Course*>()) {}
 
