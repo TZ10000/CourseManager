@@ -176,13 +176,15 @@ bool CourseTree::BuildMapfromFile(string filename)
     
         allCourseMap.insert(pair<string,Course*>(courseNum,newCourse));  // leave the pointer part empty
         // if failed to read the file, clear the graph and return
-        if (!infile.eof())
-        {
-            cerr << "Failed to read " << filename << endl;
-            return false;
-        }
-        infile.close();
+
     }
+    if (!infile.eof())
+    //if(infile.eof())
+    {
+        cerr << "Failed to read " << filename << endl;
+        return false;
+    }
+    infile.close();
     return true;
 }
 

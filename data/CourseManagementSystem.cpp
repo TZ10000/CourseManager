@@ -4,6 +4,8 @@
 #include <vector>
 #include <algorithm>
 #include <time.h>
+#include "Course.hpp"
+#include "CourseTree.hpp"
 using namespace std;
 
 class Course
@@ -91,6 +93,7 @@ void Interface::TeacherUI()
     cout << "/// 1. Input a course.                      ///" << endl;
     cout << "/// 2. Delete a course.                     ///" << endl;
     cout << "/// 3. Search a course.                     ///" << endl;
+    cout << "/// 0. Exit the Program.                    ///" << endl;
     cout << "///////////////////////////////////////////////" << endl;
 };
 
@@ -151,36 +154,43 @@ int main()
     {    
         int choice; // store the value of the user's choice
         bool isback = false;  // decides if the user choose to go back from their choice
+
+ ////// WARNING goto landing airstrip  //////
+ /*//*/ label_TeacherUI:               //////
+ ////////////////////////////////////////////
         interface.TeacherUI();
         cin >> choice;
-
-        while(!isback)
-        {
-            switch (choice)
-            {       
-                case 1:  // Course Input
-                {
-                    char yn;
-                    InputCourse();
-                    cout << "Add other one? [Y/N]" << endl;
-                    cin >> yn;
-                    if (yn == 'Y' || yn == 'y')
-                        isback = false;
-                    else if (yn == 'N' || yn == 'n')
-                        isback = true;
-                    // else
-                    // {
-                    //     // TODO: error handling
-                    // }
-                }
-
-                // // Course change
-                // case 2:
-
-                // // Course search
-                // case 3:
-
+        switch (choice)
+        {   
+            case 0:  // Exit the program
+            {
+                cout << ">>>Thank you<<<" << endl;
+                exit(0);
             }
+            case 1:  // Course Input
+            {
+            ////// WARNING goto landing airstrip  //////
+            /*//*/ label_CourseInput:             //////
+            ////////////////////////////////////////////
+                char yn;
+                InputCourse();
+                cout << "Add other one? [Y/N]" << endl;
+                cin >> yn;
+                if (yn == 'Y' || yn == 'y')
+                    goto label_CourseInput;  // if the user chooses yes, then repeat the process
+                else if (yn == 'N' || yn == 'n')
+                    goto label_TeacherUI;  // if the user chooses no, then go back to the teacher interface
+                // else
+                // {
+                //     // TODO: error handling
+                // }
+            }
+
+            // // Course change
+            // case 2:
+
+            // // Course search
+            // case 3:
         }
     }  
 
