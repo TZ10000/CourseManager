@@ -1,5 +1,1 @@
-        // if (!readHeader)
-        // {
-        //     readHeader = true;
-        //     continue;
-        // }
+                        coursepointer = myTree.allCourseMap.at(coursenum);

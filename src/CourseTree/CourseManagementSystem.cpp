@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <time.h>
+#include <sstream>
 #include "Course.hpp"
 #include "CourseTree.hpp"
 using namespace std;
@@ -65,6 +66,7 @@ class Interface
         void StartUI();
         void StudentUI();
         void TeacherUI();
+        bool ShowFullCourses();
 };
 void Interface::StartUI()
 {
@@ -88,6 +90,8 @@ void Interface::StudentUI()
     cout << "/// 2. Add courses to my schedule.               ///" << endl;
     cout << "/// 3. Drop courses from my schedule.            ///" << endl;
     cout << "/// 4. Auto generate my personal course schedule.///" << endl;
+    cout << "/// 5. Show all course.                          ///" << endl;
+    cout << "/// 0. Exit the Program.                         ///" << endl;
     cout << "////////////////////////////////////////////////////" << endl;
 };
 void Interface::TeacherUI()
@@ -98,9 +102,42 @@ void Interface::TeacherUI()
     cout << "/// 1. Input a course.                      ///" << endl;
     cout << "/// 2. Delete a course.                     ///" << endl;
     cout << "/// 3. Search a course.                     ///" << endl;
+    cout << "/// 4. Show all course.                     ///" << endl;
     cout << "/// 0. Exit the Program.                    ///" << endl;
     cout << "///////////////////////////////////////////////" << endl;
 };
+bool Interface::ShowFullCourses()
+{
+    cout << "Which year? (EX: 21,22,23)" << endl;
+    string year;
+    cin >> year;
+    cout << "Fall or Spring?" << endl;
+    cout << "1. Fall" << endl;
+    cout << "2. Spring" << endl;
+
+    int fasp;
+    cin >> fasp;
+    string faspstr;
+    if (fasp == 1)
+        faspstr = "FA";
+    else if (fasp == 2)
+        faspstr = "SP";
+    
+    ifstream infile("Schedule" + faspstr + year + ".txt");
+    while(infile)
+    {        
+        string s;
+        if (!getline(infile, s)) break;     // if the file is empty, exit the loop
+        cout << s << endl;
+    }
+    if (!infile.eof())
+    {
+        cerr << "Schedule" + faspstr + year + ".txt" << "does not exist." << endl;
+        return false;        
+    }
+    infile.close();
+    return true;
+}
 
 void InputCourse()
 {
@@ -120,12 +157,6 @@ void InputCourse()
                 fasp = "FA";
             if (semchoice == 2)
                 fasp = "SP";
-            // ifstream inFile("Schedule" + fasp + year + ".txt");
-                // if (!inFile)
-                // {
-                //     ofstream inFile("Schedule" + fasp + year + ".txt");
-                //     inFile << "Course Number            Days           Time           Prereq           Coreq" << endl;
-                // }
             ofstream outFile("Schedule" + fasp + year + ".txt", ios::app);
             setcourse.SetClassNum();
             setcourse.SetDate();
@@ -150,8 +181,154 @@ int main()
     if (identity == 1)  // is a student
     {
         int choice; // store the value of the user's choice
+
+ ////// WARNING goto landing airstrip  //////
+ /*//*/ label_StudentUI:               //////
+ ////////////////////////////////////////////
         interface.StudentUI();
         cin >> choice;
+
+        switch (choice)
+        {
+        // Course Search
+            case 1:
+            {
+        ////// WARNING goto landing airstrip  //////
+        /*//*/ label_StudentCourseSearch:     //////
+        ////////////////////////////////////////////
+                cout << "Which year? (EX: 21,22,23)" << endl;
+                string years;
+                cin >> years;
+                cout << "Fall or Spring?" << endl;
+                cout << "1. Fall" << endl;
+                cout << "2. Spring" << endl;
+
+                int fasp;
+                cin >> fasp;
+                string faspstr;
+                if (fasp == 1)
+                    faspstr = "FA";
+                else if (fasp == 2)
+                    faspstr = "SP";
+                
+                CourseTree myTree;
+                if (myTree.BuildMapfromFile("Schedule" + faspstr + years + ".txt"))
+                {
+                    string coursenum;
+                    Course* coursepointer;
+                    cout << "Type in Course Num (ex: CSE8B)" << endl;
+                    cin >> coursenum;
+
+                    try
+                    {
+                        coursepointer = myTree.allCourseMap.at(coursenum);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        cout << "Not found in this semester,try again? [Y/N]" << endl;
+                        char answer;
+                        cin >> answer;
+                        if (answer == 'y' || answer == 'Y')
+                            goto label_StudentCourseSearch;
+                        if (answer == 'n' || answer == 'N')
+                            goto label_StudentUI;
+                    }
+
+                    cout << "Class Number: " << coursepointer->name << endl;
+                    if (coursepointer->day == 24)
+                        cout << "Day: " << "TTH" << endl;
+                    if (coursepointer->day == 135)
+                        cout << "Day: " << "MWF" << endl;
+                    cout << "Start: " << coursepointer->startTime << endl;
+                    cout << "End: " << coursepointer->endTime << endl;
+                    for (auto x:coursepointer->preReqNum)
+                        cout << "preRequisite: " << x << endl;
+                    cout << "Search another? [Y/N]" << endl;
+                    char answer;
+                    cin >> answer;
+                    if (answer == 'y' || answer == 'Y')
+                        goto label_StudentCourseSearch;
+                    if (answer == 'n' || answer == 'N')
+                        goto label_StudentUI;
+                }
+            }
+            
+            // Add Course
+            case 2:
+            {
+        ////// WARNING goto landing airstrip  //////
+        /*//*/ label_StudentAddCourse:        //////
+        ////////////////////////////////////////////
+                cout << "Your Name?" << endl;
+                string studentName;
+                cin >> studentName;
+                cout << "Which year? ex: 22,21,20" << endl;
+                string year;
+                cin >> year;
+                cout << "Which semester?" << endl;
+                cout << "1.Fall" << endl;
+                cout << "2.Spring" << endl;
+                int sem;
+                cin >> sem;
+                string semstr;
+                if (sem == 1)
+                    semstr = "FA";
+                else
+                    semstr = "SP";
+                ofstream outfile(studentName + semstr + year + ".txt");  // Create a txt file to store the student
+
+
+            }
+
+            // Drop Course
+            case 3:
+            {
+
+            }
+
+            // Show all Course
+            case 4:
+            {
+        ////// WARNING goto landing airstrip   //////
+        /*//*/ label_StudentShowAllCourse:     //////
+        /////////////////////////////////////////////
+                if (interface.ShowFullCourses())
+                {
+                    cout << "Show another semester? [Y/N]" << endl;
+                    char answer;
+                    cin >> answer;
+                    if (answer == 'y' || answer == 'Y')
+                        goto label_StudentShowAllCourse;
+                    if (answer == 'n' || answer == 'N')
+                        goto label_StudentUI;
+                }
+                else
+                {
+                    cout << "Try again? [Y/N]" << endl;
+                    char answer;
+                    cin >> answer;
+                    if (answer == 'y' || answer == 'Y')
+                        goto label_StudentShowAllCourse;
+                    if (answer == 'n' || answer == 'N')
+                        goto label_StudentUI;
+                }
+                
+
+            }
+            
+            // Generate Course Table
+            case 5:
+            {
+
+            }
+            
+            // Exit
+            case 0:  // Exit the program
+            {
+                cout << ">>>Thank you<<<" << endl;
+                exit(0);
+            }
+        }
     }
 
     if (identity == 2)  // is a teacher
@@ -205,6 +382,7 @@ int main()
                 cout << "Fall or Spring?" << endl;
                 cout << "1. Fall" << endl;
                 cout << "2. Spring" << endl;
+
                 int fasp;
                 cin >> fasp;
                 string faspstr;
@@ -220,14 +398,15 @@ int main()
                     Course* coursepointer;
                     cout << "Type in Course Num (ex: CSE8B)" << endl;
                     cin >> coursenum;
+
                     try
                     {
                         coursepointer = myTree.allCourseMap.at(coursenum);
                     }
                     catch(const std::exception& e)
                     {
-                        char answer;
                         cout << "Not found in this semester,try again? [Y/N]" << endl;
+                        char answer;
                         cin >> answer;
                         if (answer == 'y' || answer == 'Y')
                             goto label_TeacherCourseSearch;
@@ -236,12 +415,51 @@ int main()
                     }
 
                     cout << "Class Number: " << coursepointer->name << endl;
-                    cout << "Day: " << coursepointer->day << endl;
+                    if (coursepointer->day == 24)
+                        cout << "Day: " << "TTH" << endl;
+                    if (coursepointer->day == 135)
+                        cout << "Day: " << "MWF" << endl;
                     cout << "Start: " << coursepointer->startTime << endl;
                     cout << "End: " << coursepointer->endTime << endl;
                     for (auto x:coursepointer->preReqNum)
                         cout << "preRequisite: " << x << endl;
+                    cout << "Search another? [Y/N]" << endl;
+                    char answer;
+                    cin >> answer;
+                    if (answer == 'y' || answer == 'Y')
+                        goto label_TeacherCourseSearch;
+                    if (answer == 'n' || answer == 'N')
+                        goto label_TeacherUI;
                 }
+            }
+            // show all course
+            case 4:
+            {
+        ////// WARNING goto landing airstrip   //////
+        /*//*/ label_TeacherShowAllCourse:     //////
+        /////////////////////////////////////////////
+                if (interface.ShowFullCourses())
+                {
+                    cout << "Show another semester? [Y/N]" << endl;
+                    char answer;
+                    cin >> answer;
+                    if (answer == 'y' || answer == 'Y')
+                        goto label_TeacherShowAllCourse;
+                    if (answer == 'n' || answer == 'N')
+                        goto label_TeacherUI;
+                }
+                else
+                {
+                    cout << "Try again? [Y/N]" << endl;
+                    char answer;
+                    cin >> answer;
+                    if (answer == 'y' || answer == 'Y')
+                        goto label_TeacherShowAllCourse;
+                    if (answer == 'n' || answer == 'N')
+                        goto label_TeacherUI;
+                }
+                
+
             }
         }
     }  
