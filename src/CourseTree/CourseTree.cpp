@@ -4,6 +4,7 @@
 
 #include "CourseTree.hpp"
 #include "Course.hpp"
+#include "CourseVec.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -173,6 +174,8 @@ vector<int> CourseTree::ParseTime(string timeStr)
  * return false if major does not exist
  */
 bool CourseTree::Generateschedule(string major) {
+    vector<vector<CourseVec*>> possiblePermutations();
+
     // get the need to take information from the maps
     try {
         vector<string> majorReqirement = majorCourseList.at(major);
@@ -181,6 +184,11 @@ bool CourseTree::Generateschedule(string major) {
     } catch (const std::exception& e) {
         // major not exist
         return false;
+    }
+
+    // initialize possiblepermutataion
+    for(int i = 0; i < 12; i++) {
+        possiblePermutations.push_back(vector<CourseVec*>());
     }
 
     // store the courses that can be take currently
@@ -199,9 +207,6 @@ bool CourseTree::Generateschedule(string major) {
         }
     }
 
-    vector<vector<Course*>> possiblePermutations();
-    // Check if time overlapped by permutation, save all permutations that
-    // have size = 4
     for (int i = 0; i < cantake.size(); i++) {
         Course* firstCourse = cantake.at(i);
 
@@ -237,11 +242,84 @@ bool CourseTree::Generateschedule(string major) {
                     }
 
                     // else this is one possible permutation
-                    possiblePermutations.push_back({firstCourse, secondCourse, thirdCourse, fourthCourse});
+                    possiblePermutations.at(0).push_back(new CourseVec({firstCourse, secondCourse, thirdCourse, fourthCourse}, Null));
                     }
                 }
             }
         }
+    }
+
+    // start from the second quarter, one quarter a big big loop
+    for (int quarter = 0; quarter < 11; quarter++) {
+        for (CourseVec* currPermutation : possiblePermutations.at(quarter)) {
+            // TODO: mark taken for this permutation
+            for ()
+
+            // store the courses that can be take currently
+            vector<Course*> cantake();  
+            Course* curr;
+            for (string s : majorReqirement) {
+                try {
+                    curr = allCourseMap.at(s);           
+                    // check if the course was taken
+                    if (curr->taken == false) {
+                        cantake.push_back(curr);
+                    }
+                    
+                } catch (const std::exception& e) {
+                    continue;
+                }
+            }
+
+            
+            
+            // Check if time overlapped by permutation, save all permutations that
+            // have size = 4
+            for (int i = 0; i < cantake.size(); i++) {
+                Course* firstCourse = cantake.at(i);
+
+                // j,k,l loop performs permutations for a element
+                for (int j = i + 1; j < cantake.size(); j++) {
+                    Course* secondCourse = cantake.at(j);
+                    // if second course overlap with first course
+                    if (((secondCourse->startTime > firstCourse->startTime) && (secondCourse->startTime < firstCourse->endTime)) || 
+                        ((secondCourse->endTime > firstCourse->startTime) && (secondCourse->endTime < firstCourse->endTime))) {
+                            continue;
+                    }
+                    
+                    for (int k = j + 1; k < cantake.size(); k++) {
+                        Course* thirdCourse = cantake.at(k);
+                        // if third course overlap with the previous ones
+                        if (((thirdCourse->startTime > firstCourse->startTime) && (thirdCourse->startTime < firstCourse->endTime)) ||
+                            ((thirdCourse->endTime > firstCourse->startTime) && (thirdCourse->endTime < firstCourse->endTime)) ||
+                            ((thirdCourse->startTime > secondCourse->startTime) && (thirdCourse->startTime < secondCourse->endTime)) ||
+                            ((thirdCourse->endTime > secondCourse->startTime) && (thirdCourse->endTime < secondCourse->endTime))) {
+                                continue;
+                        }
+                        
+                        for (int l = k + 1; l < cantake.size(); l++) {
+                            Course* fourthCourse = cantake.at(l) {
+                            // if fourth course overlap
+                            if (((fourthCourse->startTime > firstCourse->startTime) && (fourthCourse->startTime < firstCourse->endTime)) || 
+                                ((fourthCourse->endTime > firstCourse->startTime) && (fourthCourse->endTime < firstCourse->endTime))
+                                ((fourthCourse->startTime > secondCourse->startTime) && (fourthCourse->startTime < secondCourse->endTime)) || 
+                                ((fourthCourse->endTime > secondCourse->startTime) && (fourthCourse->endTime < secondCourse->endTime))
+                                ((fourthCourse->startTime > thirdCourse->startTime) && (fourthCourse->startTime < thirdCourse->endTime)) || 
+                                ((fourthCourse->endTime > thirdCourse->startTime) && (fourthCourse->endTime < thirdCourse->endTime))) {
+                                    continue;
+                            }
+
+                            // else this is one possible permutation
+                            possiblePermutations.at(quarter + 1).push_back(new CourseVec({firstCourse, secondCourse, thirdCourse, fourthCourse}, currPermutation));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // TODO: mark untake for this permutation
+
     }
 
 

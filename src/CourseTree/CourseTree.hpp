@@ -8,6 +8,7 @@
 #include <iostream>
 #include <vector>
 #include "Course.hpp"
+#include "CourseVec.hpp"
 #include <map>
 #include <iostream>
 #include <fstream>
@@ -289,7 +290,7 @@ vector<int> CourseTree::ParseTime(string timeStr)
 }
 
 /* generate a schedule for the current quarter */
-bool CourseTree::Generateschedule(string major, int numOfCourse);
+bool CourseTree::Generateschedule(string major);
 
 /* Build the vector that store the course requirement for a major,
  * name of the vector should be the name of the major 
