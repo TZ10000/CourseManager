@@ -5,6 +5,7 @@
         "iosfwd": "cpp",
         "xstring": "cpp",
         "regex": "cpp",
-        "sstream": "cpp"
+        "sstream": "cpp",
+        "string": "cpp"
     }
 }
