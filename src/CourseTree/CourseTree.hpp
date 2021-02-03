@@ -29,6 +29,10 @@ class CourseTree {
 
     Course* root = new Course();
 
+    map<string, vector<string>> majorCourseList;
+    map<string, int> majorElectiveNum;
+    map<string, vector<string>> majorElectiveList;
+
     /* constructor */
     CourseTree();
 
@@ -285,7 +289,12 @@ vector<int> CourseTree::ParseTime(string timeStr)
 }
 
 /* generate a schedule for the current quarter */
-void CourseTree::Generateschedule(vector<Course>& schedule, vector<string>& majorRequirement) {}
+void CourseTree::Generateschedule(string major) {}
+
+/* Build the vector that store the course requirement for a major,
+ * name of the vector should be the name of the major 
+ */
+bool CourseTree::buildMajorVector(string filename);
 
 /* parse the input string*/
 vector<string> CourseTree::StringParse(string str)

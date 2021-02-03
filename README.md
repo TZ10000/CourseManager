@@ -1,4 +1,8 @@
 ## Dev issue
+generate all courses: input your major(only support cse now)
+
+write things into the constructor and desttuctor? use new in the main function?
+
 Need 12 .txt files for schedule, 1 file for major requirement.
 
 need to support multiple prereq.

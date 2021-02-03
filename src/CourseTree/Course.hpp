@@ -20,16 +20,16 @@ class Course {
     int endTime;
     int day;
     vector<string> preReqNum;  // store the name 
-    // bool taken;         // if the student took the course, not sure if we need it
+    bool taken;         // if the student took the course
     vector<Course*> prereq;
     vector<Course*> childrenCourse;
 
     // Null constructor
-    Course() : name(""), startTime(-1), endTime(-1), day(-1), prereq(vector<Course*>()), childrenCourse(vector<Course*>()) {}
+    Course() : name(""), startTime(-1), endTime(-1), day(-1), taken(true), prereq(vector<Course*>()), childrenCourse(vector<Course*>()) {}
 
     // Course constructor
     Course(string name, int starttime, int endtime, int day, Course* prereq) : 
-        name(name), startTime(starttime), endTime(endtime), prereq(vector<Course*>()), 
+        name(name), taken(false), startTime(starttime), endTime(endtime), prereq(vector<Course*>()), 
         day(day), preReqNum(vector<string>()), childrenCourse(vector<Course*>()) {}
 
     // Add the course to childcourse list
@@ -37,10 +37,10 @@ class Course {
       childrenCourse.push_back(child);
     }
 
-    /* TODO */
-    // void take() {
-    //     taken = true;
-    // }
+
+    void take() {
+        taken = true;
+    }
 
 };
 

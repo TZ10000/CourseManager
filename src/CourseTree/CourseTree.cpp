@@ -39,80 +39,6 @@ void CourseTree::BuildTreeFromFile(const char* filename)
             }
         }
     }
-    // ifstream infile(filename);
-    // bool readHeader = false;
-
-    // while (infile)
-    // {
-    //     string s;
-    //     if (!getline(infile, s)) break;     // if the file is empty, exit the loop
-
-    //     // skip the header of the file
-    //     if (!readHeader)
-    //     {
-    //         readHeader = true;
-    //         continue;
-    //     }
-
-    //     // read each line of the dataset, each line represent a course
-    //     istringstream ss(s);
-    //     vector<string> record;
-    //     record = StringParse(s);
-    //     // while (ss) {
-    //     //     string str;
-    //     //     if (!getline(ss, str, '\t')) break;
-    //     //     record.push_back(str);
-    //     // }
-
-    //     // if format is wrong, skip current line
-    //     if (record.size() != 5)
-    //         continue;
-
-    //     // extract the information
-    //     string courseNum(record[0]);
-    //     string days(record[1]);
-    //     string time(record[2]);     // read in as a string
-    //     string prereq(record[3]);
-    //     string coreq(record[4]);
-
-    //     // Build the tree
-    //     // parse start time and end time
-    //     vector<int> timevector = ParseTime(time);
-    //     int start = timevector[0];
-    //     int end = timevector[1];
-
-    //     // parse day
-    //     int parsedday = -1;
-    //     if (days == "MWF")
-    //         parsedday = 135;
-
-    //     if (days == "TTh")
-    //         parsedday = 24;
-
-    //     // If no prereq, the course should be connected directly to the root.
-    //     if (prereq == "None")
-    //     {
-    //         Course* currCourse = new Course(courseNum, start, end, parsedday, root);
-    //         root->childrenCourse.push_back(currCourse);
-    //     }
-
-    //     // If has prereq, set the course to the leave of the prereq, update
-    //     // prereq's children vector
-    //     else
-    //     {
-    //         // need to support multiple prereq. Course* parentCourse = getCourse(prereq)
-    //     }
-    // }
-
-    // if failed to read the file, clear the graph and return
-    // if (!infile.eof())
-    // {
-    //     cerr << "Failed to read " << filename << endl;
-    //     return false;
-    // }
-    // infile.close();
-    // return false;
-
 }
 
 bool CourseTree::BuildMapfromFile(string filename)
@@ -170,6 +96,7 @@ bool CourseTree::BuildMapfromFile(string filename)
                      
         newCourse->name = courseNum;
         newCourse->day = parsedday;
+        newCourse->taken = false;
         newCourse->startTime = start;
         newCourse->endTime = end;
         newCourse->preReqNum = prereq;
@@ -243,7 +170,71 @@ vector<int> CourseTree::ParseTime(string timeStr)
 }
 
 /* generate a schedule for the current quarter */
-void CourseTree::Generateschedule(vector<Course>& schedule, vector<string>& majorRequirement) {}
+void CourseTree::Generateschedule(string major) {
+    // get the need to take information from the maps
+    vector<string> majotReqirement = majorCourseList.find(major);
+    int numElective = majorElectiveNum.find(major);
+    vector<string> electiveList = majorElectiveList.find(major);
+
+    // store the courses that can be take currently
+    vector<course*> cantake();  
+    for (string s : majotReqirement) {
+        allCourseMap.find(s)
+    }
+
+}
+
+bool CourseTree::buildMajorVector(string filename) {
+    ifstream infile(filename);
+    bool readHeader = false;
+
+    while(infile)
+    {
+        string s;
+        if (!getline(infile, s)) break;     // if the file is empty, exit the loop
+
+        // skip the header of the file
+        if (!readHeader)
+        {
+            readHeader = true;
+            continue;
+        }
+
+        // read each line of the dataset, each line represent a course
+        istringstream ss(s);
+        vector<string> record;
+        record = StringParse(s);
+        // while (ss) {
+        //     string str;
+        //     if (!getline(ss, str, '\t')) break;
+        //     record.push_back(str);
+        // }
+
+        // if format is wrong, skip current line
+        if (record.size() != 4)
+            continue;
+
+        // extract the information
+        string major(record[0]);
+        vector<string> requiredCourses = ParsePrereq(record[1]);
+        string requiredElective(record[2]);
+        vector<string> electiveList = ParsePrereq(record[3]);
+    
+        // insert the variables read into the map
+        majorCourseList.insert(pair<string, vector<string>>(major,requiredCourses));
+        majorElectiveNum.insert(pair<string, int>(major, requiredElective));
+        majorElectiveList.insert(pair<string, vector<string>>(major,electiveList));
+    }
+
+    if (!infile.eof())
+    //if(infile.eof())
+    {
+        cerr << "Failed to read " << filename << endl;
+        return false;
+    }
+    infile.close();
+    return true;
+}
 
 /* parse the input string*/
 vector<string> CourseTree::StringParse(string str)
