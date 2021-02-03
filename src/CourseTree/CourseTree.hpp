@@ -289,7 +289,7 @@ vector<int> CourseTree::ParseTime(string timeStr)
 }
 
 /* generate a schedule for the current quarter */
-void CourseTree::Generateschedule(string major) {}
+bool CourseTree::Generateschedule(string major, int numOfCourse);
 
 /* Build the vector that store the course requirement for a major,
  * name of the vector should be the name of the major 

@@ -169,19 +169,83 @@ vector<int> CourseTree::ParseTime(string timeStr)
     return outint;
 }
 
-/* generate a schedule for the current quarter */
-void CourseTree::Generateschedule(string major) {
+/* generate a schedule for the current quarter 
+ * return false if major does not exist
+ */
+bool CourseTree::Generateschedule(string major) {
     // get the need to take information from the maps
-    vector<string> majotReqirement = majorCourseList.find(major);
-    int numElective = majorElectiveNum.find(major);
-    vector<string> electiveList = majorElectiveList.find(major);
-
-    // store the courses that can be take currently
-    vector<course*> cantake();  
-    for (string s : majotReqirement) {
-        allCourseMap.find(s)
+    try {
+        vector<string> majorReqirement = majorCourseList.at(major);
+        int numElective = majorElectiveNum.at(major);
+        vector<string> electiveList = majorElectiveList.at(major);
+    } catch (const std::exception& e) {
+        // major not exist
+        return false;
     }
 
+    // store the courses that can be take currently
+    vector<Course*> cantake();  
+    Course* curr;
+    for (string s : majorReqirement) {
+        try {
+            curr = allCourseMap.at(s);           
+            // check if the course was taken
+            if (curr->taken == false) {
+                cantake.push_back(curr);
+            }
+            
+        } catch (const std::exception& e) {
+            continue;
+        }
+    }
+
+    vector<vector<Course*>> possiblePermutations();
+    // Check if time overlapped by permutation, save all permutations that
+    // have size = 4
+    for (int i = 0; i < cantake.size(); i++) {
+        Course* firstCourse = cantake.at(i);
+
+        // j,k,l loop performs permutations for a element
+        for (int j = i + 1; j < cantake.size(); j++) {
+            Course* secondCourse = cantake.at(j);
+            // if second course overlap with first course
+            if (((secondCourse->startTime > firstCourse->startTime) && (secondCourse->startTime < firstCourse->endTime)) || 
+                ((secondCourse->endTime > firstCourse->startTime) && (secondCourse->endTime < firstCourse->endTime))) {
+                    continue;
+            }
+            
+            for (int k = j + 1; k < cantake.size(); k++) {
+                Course* thirdCourse = cantake.at(k);
+                // if third course overlap with the previous ones
+                if (((thirdCourse->startTime > firstCourse->startTime) && (thirdCourse->startTime < firstCourse->endTime)) ||
+                    ((thirdCourse->endTime > firstCourse->startTime) && (thirdCourse->endTime < firstCourse->endTime)) ||
+                    ((thirdCourse->startTime > secondCourse->startTime) && (thirdCourse->startTime < secondCourse->endTime)) ||
+                    ((thirdCourse->endTime > secondCourse->startTime) && (thirdCourse->endTime < secondCourse->endTime))) {
+                        continue;
+                }
+                
+                for (int l = k + 1; l < cantake.size(); l++) {
+                    Course* fourthCourse = cantake.at(l) {
+                    // if fourth course overlap
+                    if (((fourthCourse->startTime > firstCourse->startTime) && (fourthCourse->startTime < firstCourse->endTime)) || 
+                        ((fourthCourse->endTime > firstCourse->startTime) && (fourthCourse->endTime < firstCourse->endTime))
+                        ((fourthCourse->startTime > secondCourse->startTime) && (fourthCourse->startTime < secondCourse->endTime)) || 
+                        ((fourthCourse->endTime > secondCourse->startTime) && (fourthCourse->endTime < secondCourse->endTime))
+                        ((fourthCourse->startTime > thirdCourse->startTime) && (fourthCourse->startTime < thirdCourse->endTime)) || 
+                        ((fourthCourse->endTime > thirdCourse->startTime) && (fourthCourse->endTime < thirdCourse->endTime))) {
+                            continue;
+                    }
+
+                    // else this is one possible permutation
+                    possiblePermutations.push_back({firstCourse, secondCourse, thirdCourse, fourthCourse});
+                    }
+                }
+            }
+        }
+    }
+
+
+    return true;
 }
 
 bool CourseTree::buildMajorVector(string filename) {
