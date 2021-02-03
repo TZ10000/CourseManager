@@ -4,6 +4,7 @@
 
 #include "CourseTree.hpp"
 #include "Course.hpp"
+#include "CourseVec.hpp"
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -39,80 +40,6 @@ void CourseTree::BuildTreeFromFile(const char* filename)
             }
         }
     }
-    // ifstream infile(filename);
-    // bool readHeader = false;
-
-    // while (infile)
-    // {
-    //     string s;
-    //     if (!getline(infile, s)) break;     // if the file is empty, exit the loop
-
-    //     // skip the header of the file
-    //     if (!readHeader)
-    //     {
-    //         readHeader = true;
-    //         continue;
-    //     }
-
-    //     // read each line of the dataset, each line represent a course
-    //     istringstream ss(s);
-    //     vector<string> record;
-    //     record = StringParse(s);
-    //     // while (ss) {
-    //     //     string str;
-    //     //     if (!getline(ss, str, '\t')) break;
-    //     //     record.push_back(str);
-    //     // }
-
-    //     // if format is wrong, skip current line
-    //     if (record.size() != 5)
-    //         continue;
-
-    //     // extract the information
-    //     string courseNum(record[0]);
-    //     string days(record[1]);
-    //     string time(record[2]);     // read in as a string
-    //     string prereq(record[3]);
-    //     string coreq(record[4]);
-
-    //     // Build the tree
-    //     // parse start time and end time
-    //     vector<int> timevector = ParseTime(time);
-    //     int start = timevector[0];
-    //     int end = timevector[1];
-
-    //     // parse day
-    //     int parsedday = -1;
-    //     if (days == "MWF")
-    //         parsedday = 135;
-
-    //     if (days == "TTh")
-    //         parsedday = 24;
-
-    //     // If no prereq, the course should be connected directly to the root.
-    //     if (prereq == "None")
-    //     {
-    //         Course* currCourse = new Course(courseNum, start, end, parsedday, root);
-    //         root->childrenCourse.push_back(currCourse);
-    //     }
-
-    //     // If has prereq, set the course to the leave of the prereq, update
-    //     // prereq's children vector
-    //     else
-    //     {
-    //         // need to support multiple prereq. Course* parentCourse = getCourse(prereq)
-    //     }
-    // }
-
-    // if failed to read the file, clear the graph and return
-    // if (!infile.eof())
-    // {
-    //     cerr << "Failed to read " << filename << endl;
-    //     return false;
-    // }
-    // infile.close();
-    // return false;
-
 }
 
 bool CourseTree::BuildMapfromFile(string filename)
@@ -170,6 +97,7 @@ bool CourseTree::BuildMapfromFile(string filename)
                      
         newCourse->name = courseNum;
         newCourse->day = parsedday;
+        newCourse->taken = false;
         newCourse->startTime = start;
         newCourse->endTime = end;
         newCourse->preReqNum = prereq;
@@ -242,8 +170,213 @@ vector<int> CourseTree::ParseTime(string timeStr)
     return outint;
 }
 
-/* generate a schedule for the current quarter */
-void CourseTree::Generateschedule(vector<Course>& schedule, vector<string>& majorRequirement) {}
+/* generate a schedule for the current quarter 
+ * return false if major does not exist
+ */
+bool CourseTree::Generateschedule(string major) {
+    vector<vector<CourseVec*>> possiblePermutations();
+
+    // get the need to take information from the maps
+    try {
+        vector<string> majorReqirement = majorCourseList.at(major);
+        int numElective = majorElectiveNum.at(major);
+        vector<string> electiveList = majorElectiveList.at(major);
+    } catch (const std::exception& e) {
+        // major not exist
+        return false;
+    }
+
+    // initialize possiblepermutataion
+    for(int i = 0; i < 12; i++) {
+        possiblePermutations.push_back(vector<CourseVec*>());
+    }
+
+    // store the courses that can be take currently
+    vector<Course*> cantake();  
+    Course* curr;
+    for (string s : majorReqirement) {
+        try {
+            curr = allCourseMap.at(s);           
+            // check if the course was taken
+            if (curr->taken == false) {
+                cantake.push_back(curr);
+            }
+            
+        } catch (const std::exception& e) {
+            continue;
+        }
+    }
+
+    for (int i = 0; i < cantake.size(); i++) {
+        Course* firstCourse = cantake.at(i);
+
+        // j,k,l loop performs permutations for a element
+        for (int j = i + 1; j < cantake.size(); j++) {
+            Course* secondCourse = cantake.at(j);
+            // if second course overlap with first course
+            if (((secondCourse->startTime > firstCourse->startTime) && (secondCourse->startTime < firstCourse->endTime)) || 
+                ((secondCourse->endTime > firstCourse->startTime) && (secondCourse->endTime < firstCourse->endTime))) {
+                    continue;
+            }
+            
+            for (int k = j + 1; k < cantake.size(); k++) {
+                Course* thirdCourse = cantake.at(k);
+                // if third course overlap with the previous ones
+                if (((thirdCourse->startTime > firstCourse->startTime) && (thirdCourse->startTime < firstCourse->endTime)) ||
+                    ((thirdCourse->endTime > firstCourse->startTime) && (thirdCourse->endTime < firstCourse->endTime)) ||
+                    ((thirdCourse->startTime > secondCourse->startTime) && (thirdCourse->startTime < secondCourse->endTime)) ||
+                    ((thirdCourse->endTime > secondCourse->startTime) && (thirdCourse->endTime < secondCourse->endTime))) {
+                        continue;
+                }
+                
+                for (int l = k + 1; l < cantake.size(); l++) {
+                    Course* fourthCourse = cantake.at(l) {
+                    // if fourth course overlap
+                    if (((fourthCourse->startTime > firstCourse->startTime) && (fourthCourse->startTime < firstCourse->endTime)) || 
+                        ((fourthCourse->endTime > firstCourse->startTime) && (fourthCourse->endTime < firstCourse->endTime))
+                        ((fourthCourse->startTime > secondCourse->startTime) && (fourthCourse->startTime < secondCourse->endTime)) || 
+                        ((fourthCourse->endTime > secondCourse->startTime) && (fourthCourse->endTime < secondCourse->endTime))
+                        ((fourthCourse->startTime > thirdCourse->startTime) && (fourthCourse->startTime < thirdCourse->endTime)) || 
+                        ((fourthCourse->endTime > thirdCourse->startTime) && (fourthCourse->endTime < thirdCourse->endTime))) {
+                            continue;
+                    }
+
+                    // else this is one possible permutation
+                    possiblePermutations.at(0).push_back(new CourseVec({firstCourse, secondCourse, thirdCourse, fourthCourse}, Null));
+                    }
+                }
+            }
+        }
+    }
+
+    // start from the second quarter, one quarter a big big loop
+    for (int quarter = 0; quarter < 11; quarter++) {
+        for (CourseVec* currPermutation : possiblePermutations.at(quarter)) {
+            // TODO: mark taken for this permutation
+            for ()
+
+            // store the courses that can be take currently
+            vector<Course*> cantake();  
+            Course* curr;
+            for (string s : majorReqirement) {
+                try {
+                    curr = allCourseMap.at(s);           
+                    // check if the course was taken
+                    if (curr->taken == false) {
+                        cantake.push_back(curr);
+                    }
+                    
+                } catch (const std::exception& e) {
+                    continue;
+                }
+            }
+
+            
+            
+            // Check if time overlapped by permutation, save all permutations that
+            // have size = 4
+            for (int i = 0; i < cantake.size(); i++) {
+                Course* firstCourse = cantake.at(i);
+
+                // j,k,l loop performs permutations for a element
+                for (int j = i + 1; j < cantake.size(); j++) {
+                    Course* secondCourse = cantake.at(j);
+                    // if second course overlap with first course
+                    if (((secondCourse->startTime > firstCourse->startTime) && (secondCourse->startTime < firstCourse->endTime)) || 
+                        ((secondCourse->endTime > firstCourse->startTime) && (secondCourse->endTime < firstCourse->endTime))) {
+                            continue;
+                    }
+                    
+                    for (int k = j + 1; k < cantake.size(); k++) {
+                        Course* thirdCourse = cantake.at(k);
+                        // if third course overlap with the previous ones
+                        if (((thirdCourse->startTime > firstCourse->startTime) && (thirdCourse->startTime < firstCourse->endTime)) ||
+                            ((thirdCourse->endTime > firstCourse->startTime) && (thirdCourse->endTime < firstCourse->endTime)) ||
+                            ((thirdCourse->startTime > secondCourse->startTime) && (thirdCourse->startTime < secondCourse->endTime)) ||
+                            ((thirdCourse->endTime > secondCourse->startTime) && (thirdCourse->endTime < secondCourse->endTime))) {
+                                continue;
+                        }
+                        
+                        for (int l = k + 1; l < cantake.size(); l++) {
+                            Course* fourthCourse = cantake.at(l) {
+                            // if fourth course overlap
+                            if (((fourthCourse->startTime > firstCourse->startTime) && (fourthCourse->startTime < firstCourse->endTime)) || 
+                                ((fourthCourse->endTime > firstCourse->startTime) && (fourthCourse->endTime < firstCourse->endTime))
+                                ((fourthCourse->startTime > secondCourse->startTime) && (fourthCourse->startTime < secondCourse->endTime)) || 
+                                ((fourthCourse->endTime > secondCourse->startTime) && (fourthCourse->endTime < secondCourse->endTime))
+                                ((fourthCourse->startTime > thirdCourse->startTime) && (fourthCourse->startTime < thirdCourse->endTime)) || 
+                                ((fourthCourse->endTime > thirdCourse->startTime) && (fourthCourse->endTime < thirdCourse->endTime))) {
+                                    continue;
+                            }
+
+                            // else this is one possible permutation
+                            possiblePermutations.at(quarter + 1).push_back(new CourseVec({firstCourse, secondCourse, thirdCourse, fourthCourse}, currPermutation));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        // TODO: mark untake for this permutation
+
+    }
+
+
+    return true;
+}
+
+bool CourseTree::buildMajorVector(string filename) {
+    ifstream infile(filename);
+    bool readHeader = false;
+
+    while(infile)
+    {
+        string s;
+        if (!getline(infile, s)) break;     // if the file is empty, exit the loop
+
+        // skip the header of the file
+        if (!readHeader)
+        {
+            readHeader = true;
+            continue;
+        }
+
+        // read each line of the dataset, each line represent a course
+        istringstream ss(s);
+        vector<string> record;
+        record = StringParse(s);
+        // while (ss) {
+        //     string str;
+        //     if (!getline(ss, str, '\t')) break;
+        //     record.push_back(str);
+        // }
+
+        // if format is wrong, skip current line
+        if (record.size() != 4)
+            continue;
+
+        // extract the information
+        string major(record[0]);
+        vector<string> requiredCourses = ParsePrereq(record[1]);
+        string requiredElective(record[2]);
+        vector<string> electiveList = ParsePrereq(record[3]);
+    
+        // insert the variables read into the map
+        majorCourseList.insert(pair<string, vector<string>>(major,requiredCourses));
+        majorElectiveNum.insert(pair<string, int>(major, requiredElective));
+        majorElectiveList.insert(pair<string, vector<string>>(major,electiveList));
+    }
+
+    if (!infile.eof())
+    //if(infile.eof())
+    {
+        cerr << "Failed to read " << filename << endl;
+        return false;
+    }
+    infile.close();
+    return true;
+}
 
 /* parse the input string*/
 vector<string> CourseTree::StringParse(string str)
