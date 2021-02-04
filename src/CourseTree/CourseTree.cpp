@@ -174,7 +174,7 @@ vector<int> CourseTree::ParseTime(string timeStr)
  * return false if major does not exist
  */
 bool CourseTree::Generateschedule(string major) {
-    vector<vector<CourseVec*>> possiblePermutations();
+    vector<vector<CourseVec*>> possiblePermutations;
 
     // get the need to take information from the maps
     try {
@@ -192,7 +192,7 @@ bool CourseTree::Generateschedule(string major) {
     }
 
     // store the courses that can be take currently
-    vector<Course*> cantake();  
+    vector<Course*> cantake;  
     Course* curr;
     for (string s : majorReqirement) {
         try {
@@ -254,6 +254,9 @@ bool CourseTree::Generateschedule(string major) {
         for (CourseVec* currPermutation : possiblePermutations.at(quarter)) {
             // TODO: mark taken for this permutation
             for ()
+            {
+                
+            }
 
             // store the courses that can be take currently
             vector<Course*> cantake();  
@@ -326,7 +329,7 @@ bool CourseTree::Generateschedule(string major) {
     return true;
 }
 
-bool CourseTree::buildMajorVector(string filename) {
+bool CourseTree::BuildMajorVector(string filename) {
     ifstream infile(filename);
     bool readHeader = false;
 

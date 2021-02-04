@@ -35,6 +35,14 @@ vector<int> Randomshuffle(int shufflenum)
 
 int main()
 {
-    cout << rand() % 1;
+    ifstream infile("asdf");
+    if (infile)
+    {
+        cout << ' ' << endl;
+    }    
+    else
+    {
+        cout << 'n' << endl;
+    }
     
 }

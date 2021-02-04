@@ -53,7 +53,9 @@ class CourseTree {
     vector<string> ParsePrereq(string prereq);
 
     /* generate a schedule for the current quarter */
-    void Generateschedule(vector<Course>& schedule, vector<string>& majorRequirement);
+    bool Generateschedule(string major);
+
+    bool BuildMajorVector(string filename);
     /* parse the input string*/
     vector<string> StringParse(string str);
     /* destructor */
@@ -290,12 +292,12 @@ vector<int> CourseTree::ParseTime(string timeStr)
 }
 
 /* generate a schedule for the current quarter */
-bool CourseTree::Generateschedule(string major);
+bool CourseTree::Generateschedule(string major){}
 
 /* Build the vector that store the course requirement for a major,
  * name of the vector should be the name of the major 
  */
-bool CourseTree::buildMajorVector(string filename);
+bool CourseTree::BuildMajorVector(string filename){}
 
 /* parse the input string*/
 vector<string> CourseTree::StringParse(string str)
