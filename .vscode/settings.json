@@ -8,6 +8,10 @@
         "sstream": "cpp",
         "string": "cpp",
         "map": "cpp",
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "hash_map": "cpp",
+        "utility": "cpp",
+        "unordered_map": "cpp",
+        "xhash": "cpp"
     }
 }

@@ -250,7 +250,7 @@ vector<string> CourseTree::ParsePrereq(string prereq)
     vector<string> outstr;
     for (auto x : prereq) 
     {
-        if (x == '-')
+        if (x == ',')
         {
             outstr.push_back(word);
             word = "";
